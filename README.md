@@ -10,3 +10,10 @@ DB_NAME: <DB_NAME>
 DB_PASSWORD: <비밀번호>
 JWT_SECRET_KEY: <JWT-SECRET-KEY>
 ```
+
+### 실행
+
+Docker Desktop 설치 필요
+```yml
+docker-compose up -d
+```
