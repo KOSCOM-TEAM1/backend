@@ -16,7 +16,7 @@ spring:
 
 # application.yml
 swagger:
-    title: "프로젝트명 API"
-    description: "프로젝트 설명을 여기에 작성합니다"
+    title: "Koscom hackathon API"
+    description: "24시간 주식 정보 분석"
     version: "1.0.0"
-    external-docs-description: "프로젝트명 API 문서"
+    external-docs-description: "프로젝트 API 문서"
