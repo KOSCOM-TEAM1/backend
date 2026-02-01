@@ -15,7 +15,7 @@ public class NewsTimelineServiceImpl implements NewsTimelineService{
 
     @Override
     public List<NewsTimelineItemDto> getNewsTimeline() {
-        return newsRepository.findAllByOrderByCreatedAtDesc()
+        return newsRepository.findAllByOrderByTimeDesc()
                 .stream()
                 .map(this::toDto)
                 .toList();
@@ -29,7 +29,7 @@ public class NewsTimelineServiceImpl implements NewsTimelineService{
         dto.setTitle(news.getTitle());
         dto.setSummary(news.getSummary());
         dto.setUrl(news.getUrl());
-        dto.setCreatedAt(news.getCreatedAt());
+        dto.setTime(news.getTime());
         dto.setRegion(news.getRegion());
         dto.setTags(news.getTags());
 

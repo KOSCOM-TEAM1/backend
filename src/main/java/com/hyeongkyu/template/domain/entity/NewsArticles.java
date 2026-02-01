@@ -40,8 +40,8 @@ public class NewsArticles {
     private String url;
 
     // 뉴스 작성시간
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "time")
+    private String time;
 
     // 관련 지역 (ex. 국내, 미국, 중국, ...)
     @Column(name = "region")

@@ -19,7 +19,7 @@ public class NewsTimelineItemDto {
 
     private String url;
 
-    private LocalDateTime createdAt;
+    private String time;
 
     private String region;
 
