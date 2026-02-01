@@ -1,13 +1,23 @@
 package com.hyeongkyu.template.domain.entity;
 
 import com.hyeongkyu.template.domain.dto.request.SignUpRequest;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 /**
  * packageName   : com.hyeongkyu.template.domain.entity
@@ -40,6 +50,9 @@ public class User {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
+    @Column(name = "picture_url")
+    private String pictureUrl;
+
     @Column(name = "password")
     private String password;
 
@@ -65,11 +78,11 @@ public class User {
 
     public static User signUpByRequest(SignUpRequest request) {
         return User.builder()
-                .serialId(request.providerId())
-                .email(request.email())
-                .nickname(request.nickName())
-                .isLogin(false)
-                .build();
+                   .serialId(request.providerId())
+                   .email(request.email())
+                   .nickname(request.nickName())
+                   .isLogin(false)
+                   .build();
     }
 
 }

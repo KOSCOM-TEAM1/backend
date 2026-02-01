@@ -7,19 +7,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * packageName   : com.hyeongkyu.template.domain.entity
- * Author        : yu-mi
+ * Author        : imhyeong-gyu
  * Data          : 2026. 2. 1.
- * Description   : 주식 계좌 정보
+ * Description   : 사용자별 앱 설정
  */
 
 @Entity
@@ -27,38 +29,28 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "accounts")
+@Table(name = "user_setting")
 @Builder
 @AllArgsConstructor
-public class Accounts {
+public class UserSetting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    // 고객
-    @Column(name = "user_id")
+    @Column(name = "user_id", unique = true)
     private Long userId;
 
-    // 계좌 이름
-    @Column(name = "account_name")
-    private String accountName;
+    // 취침 시간
+    @Column(name = "start_time")
+    private String startTime = "2200";
 
-    // 계좌 번호
-    @Column(name = "account_number", unique = true)
-    private String accountNumber;
+    // 기상 시간
+    @Column(name = "end_time")
+    private String endTime = "0800";
 
-    // 잔액 (증권의 경우, 예수금)
-    @Column(name = "balance")
-    private Long balance;
-
-    // 제공자명 (ex. 신한은행, 신한투자증권)
-    @Column(name = "broker")
-    private String broker;
-
-    // 자산 종류 (ex. 주식, 은행, 기타)
-    @Column(name = "type")
-    private String type;
-
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
