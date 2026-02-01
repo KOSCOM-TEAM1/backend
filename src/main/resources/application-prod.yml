@@ -2,7 +2,7 @@ spring:
   # mysql 데이터 베이스
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://db-3p4k04-fkr.cdb.fin-ntruss.com:3306/${DB_NAME}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://db-3p4k04-fkr.cdb.fin-ntruss.com:3306/koscom?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
