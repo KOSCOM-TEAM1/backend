@@ -3,9 +3,6 @@ spring:
         name: template
     profiles:
         active: local
-    config:
-        import:
-            - classpath:application-secret.yml
 
     jpa:
         show-sql: true
