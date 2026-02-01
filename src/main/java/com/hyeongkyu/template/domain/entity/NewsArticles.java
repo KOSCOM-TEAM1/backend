@@ -23,7 +23,7 @@ public class NewsArticles {
     @Column(name = "id")
     private Long id;
 
-    // 영향도 (ex. 높은 영향, 중간 영향, ...)
+    // 영향도 (ex. 높은/중간/낮은 영향, 시장 데이터)
     @Column(name = "impact")
     private String impact;
 
