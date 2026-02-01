@@ -1,8 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile: "local"
-
   # mysql 데이터 베이스
   datasource:
     datasource:
