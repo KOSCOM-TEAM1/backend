@@ -6,8 +6,8 @@ import com.hyeongkyu.template.domain.entity.News;
 import com.hyeongkyu.template.domain.entity.NewsAnalysis;
 import com.hyeongkyu.template.domain.entity.Stocks;
 import com.hyeongkyu.template.domain.entity.UserStocks;
-import com.hyeongkyu.template.repository.NewsAnalysisRepository;
-import com.hyeongkyu.template.repository.NewsRepository;
+import com.hyeongkyu.template.repository.NewsAnalysisResultRepository;
+import com.hyeongkyu.template.repository.NewsAiRepository;
 import com.hyeongkyu.template.repository.StocksRepository;
 import com.hyeongkyu.template.repository.UserStocksRepository;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
@@ -36,8 +36,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class NewsAnalysisService {
 
     private final OpenAiService openAiService;
-    private final NewsRepository newsRepository;
-    private final NewsAnalysisRepository newsAnalysisRepository;
+    private final NewsAiRepository newsAiRepository;
+    private final NewsAnalysisResultRepository newsAnalysisResultRepository;
     private final UserStocksRepository userStocksRepository;
     private final StocksRepository stocksRepository;
 
@@ -49,7 +49,7 @@ public class NewsAnalysisService {
         log.info("미분석 뉴스 분석 시작");
 
         // 1. 미분석 뉴스 가져오기
-        List<News> newsToAnalyze = newsRepository.findByIsAnalyzedFalse();
+        List<News> newsToAnalyze = newsAiRepository.findByIsAnalyzedFalse();
 
         if (newsToAnalyze.isEmpty()) {
             log.info("분석할 뉴스가 없습니다.");
@@ -67,7 +67,7 @@ public class NewsAnalysisService {
                 
                 // 뉴스를 분석 완료로 표시
                 news.setIsAnalyzed(true);
-                newsRepository.save(news);
+                newsAiRepository.save(news);
                 
             } catch (Exception e) {
                 log.error("뉴스 {} 분석 중 오류 발생: {}", news.getId(), e.getMessage(), e);
@@ -85,14 +85,14 @@ public class NewsAnalysisService {
     public NewsAnalysisResponse analyzeSingleNews(Long newsId) {
         log.info("뉴스 {} 분석 시작", newsId);
         
-        News news = newsRepository.findById(newsId)
+        News news = newsAiRepository.findById(newsId)
                 .orElseThrow(() -> new RuntimeException("뉴스를 찾을 수 없습니다: " + newsId));
         
         NewsAnalysisResponse analysis = analyzeNewsWithAI(news);
         
         // 뉴스를 분석 완료로 표시
         news.setIsAnalyzed(true);
-        newsRepository.save(news);
+        newsAiRepository.save(news);
         
         log.info("뉴스 {} 분석 완료", newsId);
         return analysis;
@@ -149,7 +149,7 @@ public class NewsAnalysisService {
                 .confidenceScore(0.85)
                 .build();
 
-        analysis = newsAnalysisRepository.save(analysis);
+        analysis = newsAnalysisResultRepository.save(analysis);
 
         // 6. 응답 DTO 생성
         return new NewsAnalysisResponse(
@@ -238,7 +238,7 @@ public class NewsAnalysisService {
     private List<News> findSimilarNews(News currentNews) {
         // 간단한 예시: 최근 7일간의 뉴스 중 3개 반환
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
-        List<News> recentNews = newsRepository.findByPublishedAtBetween(
+        List<News> recentNews = newsAiRepository.findByPublishedAtBetween(
                 sevenDaysAgo, 
                 currentNews.getPublishedAt()
         );

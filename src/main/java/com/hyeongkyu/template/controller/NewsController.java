@@ -2,7 +2,7 @@ package com.hyeongkyu.template.controller;
 
 import com.hyeongkyu.template.domain.entity.News;
 import com.hyeongkyu.template.global.common.ResponseDto;
-import com.hyeongkyu.template.repository.NewsRepository;
+import com.hyeongkyu.template.repository.NewsAiRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "뉴스 관리", description = "뉴스 CRUD API (테스트용)")
 public class NewsController {
 
-    private final NewsRepository newsRepository;
+    private final NewsAiRepository newsAiRepository;
 
     /**
      * 테스트용 뉴스 생성
@@ -48,7 +48,7 @@ public class NewsController {
                 .isAnalyzed(false)
                 .build();
 
-        news = newsRepository.save(news);
+        news = newsAiRepository.save(news);
         
         log.info("뉴스 생성됨: {}", news.getId());
 
@@ -61,7 +61,7 @@ public class NewsController {
     @GetMapping
     @Operation(summary = "전체 뉴스 조회", description = "저장된 모든 뉴스를 조회합니다.")
     public ResponseEntity<ResponseDto<List<News>>> getAllNews() {
-        List<News> newsList = newsRepository.findAll();
+        List<News> newsList = newsAiRepository.findAll();
         
         return ResponseEntity.ok((ResponseDto<List<News>>) ResponseDto.ok(newsList));
     }
@@ -72,7 +72,7 @@ public class NewsController {
     @GetMapping("/unanalyzed")
     @Operation(summary = "미분석 뉴스 조회", description = "아직 AI 분석이 안 된 뉴스만 조회합니다.")
     public ResponseEntity<ResponseDto<List<News>>> getUnanalyzedNews() {
-        List<News> newsList = newsRepository.findByIsAnalyzedFalse();
+        List<News> newsList = newsAiRepository.findByIsAnalyzedFalse();
         
         return ResponseEntity.ok((ResponseDto<List<News>>) ResponseDto.ok(newsList));
     }
@@ -124,7 +124,7 @@ public class NewsController {
                 .isAnalyzed(false)
                 .build();
 
-        List<News> savedNews = newsRepository.saveAll(List.of(news1, news2, news3));
+        List<News> savedNews = newsAiRepository.saveAll(List.of(news1, news2, news3));
         
         log.info("샘플 뉴스 {}개 생성됨", savedNews.size());
 

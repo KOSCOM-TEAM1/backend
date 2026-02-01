@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface NewsAnalysisRepository extends JpaRepository<NewsAnalysis, Long> {
+public interface NewsAnalysisResultRepository extends JpaRepository<NewsAnalysis, Long> {
 
     // 특정 뉴스와 사용자의 분석 결과 조회
     Optional<NewsAnalysis> findByNewsIdAndUserId(Long newsId, Long userId);
