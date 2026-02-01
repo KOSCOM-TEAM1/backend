@@ -48,7 +48,7 @@ public class UserStocks {
     private String holdings;
 
     // 계좌 번호
-    @Column(name = "account_id", nullable = false, unique = true)
+    @Column(name = "account_id", nullable = false)
     private String accountNumber;
 
     // 제공자명 (ex. 신한은행, 신한투자증권)
@@ -58,7 +58,7 @@ public class UserStocks {
     // 자산 종류 (ex. 주식, 은행, 기타)
     @Column(name = "type")
     private String type;
-    
+
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

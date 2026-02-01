@@ -37,16 +37,20 @@ public class Stocks {
     @Column(name = "id")
     private Long id;
 
-    // 식별코드
+    // 식별코드 (코스피의 경우 isuSrtCd)
     @Column(name = "code")
     private String code;
 
-    // 종목 이름 (ex. 삼성전자, SK하이닉스)
+    // 종목 이름 (ex. 삼성전자, SK하이닉스, 네이버)
     @Column(name = "name")
     private String name;
 
+    // 종목 이름 영문 (ex. samsung, naver)
+    @Column(name = "name_en")
+    private String nameEn;
+
     // 시장명 (ex. 코스피, 코스닥, 나스닥)
-    @Column(name = "market", unique = true)
+    @Column(name = "market")
     private String market;
 
     // 산업 섹터 대분류 (ex. 기술, 금융, 헬스케어)

@@ -46,7 +46,7 @@ public class StockPrices {
     private String code;
 
     // 시장종류 (ex. 코스피, 코스닥, 나스닥)
-    @Column(name = "close_price", unique = true)
+    @Column(name = "close_price")
     private Long price;
 
     // 거래 일시
