@@ -16,6 +16,7 @@ import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,6 @@ public class NewsAnalysisService {
     /**
      * 모든 미분석 뉴스를 AI로 분석
      */
-    @Transactional
     public List<NewsAnalysisResponse> analyzeAllUnanalyzedNews() {
         log.info("미분석 뉴스 분석 시작");
 
@@ -130,6 +130,7 @@ public class NewsAnalysisService {
 
         // 3. AI 응답 파싱
         AnalysisResult parsedResult = parseAIResponse(aiResponse);
+        news.setTags(parsedResult.tags);
 
         // 4. 유사 뉴스 검색 (과거 뉴스에서 유사한 것 찾기)
         List<News> similarNews = findSimilarNews(news);
@@ -157,6 +158,7 @@ public class NewsAnalysisService {
                 news.getId(),
                 news.getTitle(),
                 news.getContent().substring(0, Math.min(200, news.getContent().length())),
+                news.getTags(),
                 news.getPublishedAt(),
                 analysis.getSummary(),
                 analysis.getImpactAnalysis(),
@@ -196,6 +198,9 @@ public class NewsAnalysisService {
         prompt.append("[유사 사례가 있다면: 사례 설명 + 당시 시장/주가 반응 + 결과]\n");
         prompt.append("[유사 사례가 없다면: '유사한 과거 사례를 찾기 어렵습니다' 라고 명시]\n");
         
+        prompt.append("\n### 4. TAGS\n");
+        prompt.append("[뉴스 관련 키워드 2개를 쉼표로 구분하여 작성]\n");
+
         return prompt.toString();
     }
 
@@ -209,10 +214,17 @@ public class NewsAnalysisService {
         String keyPoints = extractSection(aiResponse, "2. 핵심 내용", "3. 유사 과거");
         String similarCases = extractSection(aiResponse, "3. 유사 과거 사례", "###END###");
         
+        String tagsText = extractSection(aiResponse, "### 4. TAGS", "###END###");
+        int tagsMarkerIdx = similarCases.indexOf("### 4. TAGS");
+        if (tagsMarkerIdx != -1) {
+            similarCases = similarCases.substring(0, tagsMarkerIdx).trim();
+        }
+
         return new AnalysisResult(
                 summary.trim(),
                 keyPoints.trim(),
-                similarCases.trim()
+                similarCases.trim(),
+                parseTags(tagsText)
         );
     }
 
@@ -229,6 +241,19 @@ public class NewsAnalysisService {
         if (endIdx == -1) endIdx = text.length();
         
         return text.substring(startIdx, endIdx).trim();
+    }
+
+    private List<String> parseTags(String tagsText) {
+        if (tagsText == null || tagsText.isBlank()) {
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(tagsText.split("[,\\n]"))
+                .map(String::trim)
+                .filter(tag -> !tag.isBlank())
+                .distinct()
+                .limit(2)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -255,7 +280,8 @@ public class NewsAnalysisService {
     private record AnalysisResult(
             String summary,
             String keyPoints,
-            String similarCases
+            String similarCases,
+            List<String> tags
     ) {}
 
 }

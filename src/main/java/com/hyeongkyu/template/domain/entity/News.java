@@ -1,13 +1,18 @@
 package com.hyeongkyu.template.domain.entity;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,6 +72,12 @@ public class News {
     // AI 분석 완료 여부
     @Column(name = "is_analyzed", columnDefinition = "TINYINT(1) DEFAULT 0")
     private Boolean isAnalyzed;
+
+    // ?댁뒪 愿???쒓렇?? (news_tags)
+    @ElementCollection
+    @CollectionTable(name = "news_tags", joinColumns = @JoinColumn(name = "news_id"))
+    @Column(name = "tag", nullable = false, length = 255)
+    private List<String> tags = new ArrayList<>();
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)

@@ -1,6 +1,7 @@
 package com.hyeongkyu.template.domain.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * packageName   : com.hyeongkyu.template.domain.dto.response
@@ -14,6 +15,7 @@ public record NewsAnalysisResponse(
         Long newsId,
         String newsTitle,
         String newsSummary,
+        List<String> tags,
         LocalDateTime newsPublishedAt,
         String summary,
         String impactAnalysis,
