@@ -21,3 +21,10 @@ jwt:
 
 openai:
   api-key: ${OPENAI_API_KEY}
+
+# 네이버 클라우드 CLOVA Voice 설정
+naver:
+  clova:
+    client-id: ${NAVER_CLOVA_CLIENT_ID}
+    client-secret: ${NAVER_CLOVA_CLIENT_SECRET}
+    api-url: https://naveropenapi.apigw-pub.fin-ntruss.com/tts-premium/v1/tts
