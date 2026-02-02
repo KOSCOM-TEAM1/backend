@@ -44,26 +44,19 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/koscom-hackathon:latest
 
-      # 6. SERVER 접속 및 배포
-      - name: Deploy to server
+      # 6-1. 첫 번째 서버 배포 및 정리
+      - name: Deploy to Server 1
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: root
-          # key: ${{ secrets.SERVER_SSH_KEY }}
-          password : ${{ secrets.SERVER_PASSWORD }}
+          password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            # 1. 최신 이미지 다운로드
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/koscom-hackathon:latest
-
-            # 2. 기존 컨테이너 중지 및 삭제 (에러 무시)
             sudo docker stop app || true
             sudo docker rm app || true
-
-            # 3. 새로운 컨테이너 실행 (PROD 프로필 적용!)
             sudo docker run -d \
-              --name app \
-              --network host \
+              --name app --network host \
               -e SPRING_PROFILES_ACTIVE=prod \
               -e DB_URL="${{ secrets.DB_URL }}" \
               -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
@@ -75,6 +68,32 @@ jobs:
               -v /home/ubuntu/logs:/logs \
               --restart always \
               ${{ secrets.DOCKER_USERNAME }}/koscom-hackathon:latest
+            # 배포 직후 안 쓰는 이미지 정리
+            sudo docker image prune -f
 
-            # 4. 청소 (사용 안 하는 이미지 삭제)
+      # 6-2. 두 번째 서버 배포 및 정리
+      - name: Deploy to Server 2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER2_HOST }}
+          username: root
+          password: ${{ secrets.SERVER2_PASSWORD }}
+          script: |
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/koscom-hackathon:latest
+            sudo docker stop app || true
+            sudo docker rm app || true
+            sudo docker run -d \
+              --name app --network host \
+              -e SPRING_PROFILES_ACTIVE=prod \
+              -e DB_URL="${{ secrets.DB_URL }}" \
+              -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
+              -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              -e NAVER_CLOVA_CLIENT_ID="${{ secrets.NAVER_CLOVA_CLIENT_ID }}" \
+              -e NAVER_CLOVA_CLIENT_SECRET="${{ secrets.NAVER_CLOVA_CLIENT_SECRET }}" \
+              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
+              -v /home/ubuntu/logs:/logs \
+              --restart always \
+              ${{ secrets.DOCKER_USERNAME }}/koscom-hackathon:latest
+            # 배포 직후 안 쓰는 이미지 정리
             sudo docker image prune -f
