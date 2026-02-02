@@ -73,6 +73,12 @@ public class News {
     @Column(name = "is_analyzed", columnDefinition = "TINYINT(1) DEFAULT 0")
     private Boolean isAnalyzed;
 
+    @Column(name = "region", length = 255)
+    private String region;
+
+    @Column(name = "impact", length = 255)
+    private String impact;
+
     // ?댁뒪 愿???쒓렇?? (news_tags)
     @ElementCollection
     @CollectionTable(name = "news_tags", joinColumns = @JoinColumn(name = "news_id"))

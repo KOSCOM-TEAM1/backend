@@ -79,8 +79,8 @@ public class NewsAnalysisService {
         log.info("뉴스 {} 분석 시작", newsId);
 
         News news = newsAiRepository.findById(newsId)
-                                    .orElseThrow(
-                                        () -> new RuntimeException("뉴스를 찾을 수 없습니다: " + newsId));
+                .orElseThrow(
+                        () -> new RuntimeException("뉴스를 찾을 수 없습니다: " + newsId));
 
         NewsAnalysisResponse analysis = analyzeNewsWithAI(news);
 
@@ -104,47 +104,49 @@ public class NewsAnalysisService {
         // 2. OpenAI API 호출
         List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM.value(),
-            "당신은 증권 뉴스 분석 전문가입니다. 뉴스를 분석하고 투자자에게 유용한 정보를 제공합니다."));
+                "당신은 증권 뉴스 분석 전문가입니다. 뉴스를 분석하고 투자자에게 유용한 정보를 제공합니다."));
         messages.add(new ChatMessage(ChatMessageRole.USER.value(), prompt));
 
         ChatCompletionRequest chatRequest = ChatCompletionRequest.builder()
-                                                                 .model(
-                                                                     "gpt-4")  // gpt-4 또는 gpt-3.5-turbo 사용 가능
-                                                                 .messages(messages)
-                                                                 .temperature(0.7)
-                                                                 .maxTokens(2000)
-                                                                 .build();
+                .model(
+                        "gpt-4")  // gpt-4 또는 gpt-3.5-turbo 사용 가능
+                .messages(messages)
+                .temperature(0.7)
+                .maxTokens(2000)
+                .build();
 
         String aiResponse = openAiService.createChatCompletion(chatRequest)
-                                         .getChoices()
-                                         .get(0)
-                                         .getMessage()
-                                         .getContent();
+                .getChoices()
+                .get(0)
+                .getMessage()
+                .getContent();
 
         log.info("AI 응답 받음: {}", aiResponse.substring(0, Math.min(100, aiResponse.length())));
 
         // 3. AI 응답 파싱
         AnalysisResult parsedResult = parseAIResponse(aiResponse);
+        news.setRegion(parsedResult.region);
+        news.setImpact(parsedResult.impact);
         news.setTags(parsedResult.tags);
 
         // 4. 유사 뉴스 검색 (과거 뉴스에서 유사한 것 찾기)
         List<News> similarNews = findSimilarNews(news);
         String similarNewsIds = similarNews.stream()
-                                           .map(n -> n.getId()
-                                                      .toString())
-                                           .collect(Collectors.joining(","));
+                .map(n -> n.getId()
+                        .toString())
+                .collect(Collectors.joining(","));
 
         // 5. DB에 저장
         NewsAnalysis analysis = NewsAnalysis.builder()
-                                            .newsId(news.getId())
-                                            .userId(1L)  // 기본 사용자 ID (필요하면 파라미터로 받을 수 있음)
-                                            .summary(parsedResult.summary)
-                                            .impactAnalysis(parsedResult.keyPoints)
-                                            .similarCases(parsedResult.similarCases)
-                                            .similarNewsIds(similarNewsIds)
-                                            .aiModel("gpt-4")
-                                            .confidenceScore(0.85)
-                                            .build();
+                .newsId(news.getId())
+                .userId(1L)  // 기본 사용자 ID (필요하면 파라미터로 받을 수 있음)
+                .summary(parsedResult.summary)
+                .impactAnalysis(parsedResult.keyPoints)
+                .similarCases(parsedResult.similarCases)
+                .similarNewsIds(similarNewsIds)
+                .aiModel("gpt-4")
+                .confidenceScore(0.85)
+                .build();
 
         analysis = newsAnalysisResultRepository.save(analysis);
 
@@ -155,6 +157,8 @@ public class NewsAnalysisService {
                 news.getTitle(),
                 news.getContent().substring(0, Math.min(200, news.getContent().length())),
                 news.getTags(),
+                news.getRegion(),
+                news.getImpact(),
                 news.getPublishedAt(),
                 analysis.getSummary(),
                 analysis.getImpactAnalysis(),
@@ -174,17 +178,17 @@ public class NewsAnalysisService {
         prompt.append("다음 증권 뉴스를 분석해주세요:\n\n");
         prompt.append("=== 뉴스 정보 ===\n");
         prompt.append("제목: ")
-              .append(news.getTitle())
-              .append("\n");
+                .append(news.getTitle())
+                .append("\n");
         prompt.append("내용: ")
-              .append(news.getContent())
-              .append("\n");
+                .append(news.getContent())
+                .append("\n");
         prompt.append("출처: ")
-              .append(news.getSource())
-              .append("\n");
+                .append(news.getSource())
+                .append("\n");
         prompt.append("발행 시간: ")
-              .append(news.getPublishedAt())
-              .append("\n\n");
+                .append(news.getPublishedAt())
+                .append("\n\n");
 
         prompt.append("다음 형식으로 분석 결과를 작성해주세요:\n\n");
 
@@ -202,9 +206,14 @@ public class NewsAnalysisService {
         prompt.append("[유사 사례가 있다면: 사례 설명 + 당시 시장/주가 반응 + 결과]\n");
         prompt.append("[유사 사례가 없다면: '유사한 과거 사례를 찾기 어렵습니다' 라고 명시]\n");
 
-        prompt.append("\n### 4. TAGS\n");
-        prompt.append("[뉴스 관련 키워드 2개를 쉼표로 구분하여 작성]\n");
+        prompt.append("\n### 4. REGION\n");
+        prompt.append("[지역을 1개로 명확히 작성: 예) 미국 동부, 유럽, 중국, 글로벌]\n");
 
+        prompt.append("\n### 5. IMPACT\n");
+        prompt.append("[영향도를 1개로 명확히 작성: 높은 영향, 중간 영향, 낮은 영향, 시장데이터]\n");
+
+        prompt.append("\n### 6. TAGS\n");
+        prompt.append("[뉴스 관련 키워드 2개를 쉼표로 구분하여 작성]\n");
 
         return prompt.toString();
     }
@@ -214,24 +223,20 @@ public class NewsAnalysisService {
      * AI 응답 파싱
      */
     private AnalysisResult parseAIResponse(String aiResponse) {
-        // AI 응답을 섹션별로 분리
         String summary = extractSection(aiResponse, "1. 뉴스 요약", "2. 핵심 내용");
         String keyPoints = extractSection(aiResponse, "2. 핵심 내용", "3. 유사 과거");
-        String similarCases = extractSection(aiResponse, "3. 유사 과거 사례", "###END###");
-
-        
-        String tagsText = extractSection(aiResponse, "### 4. TAGS", "###END###");
-        int tagsMarkerIdx = similarCases.indexOf("### 4. TAGS");
-        if (tagsMarkerIdx != -1) {
-            similarCases = similarCases.substring(0, tagsMarkerIdx).trim();
-        }
+        String similarCases = extractSection(aiResponse, "3. 유사 과거 사례", "### 4. REGION");
+        String region = extractSection(aiResponse, "### 4. REGION", "### 5. IMPACT");
+        String impact = extractSection(aiResponse, "### 5. IMPACT", "### 6. TAGS");
+        String tagsText = extractSection(aiResponse, "### 6. TAGS", "###END###");
 
         return new AnalysisResult(
                 summary.trim(),
                 keyPoints.trim(),
                 similarCases.trim(),
+                region.trim(),
+                normalizeImpact(impact.trim()),
                 parseTags(tagsText)
-
         );
     }
 
@@ -252,7 +257,7 @@ public class NewsAnalysisService {
         }
 
         return text.substring(startIdx, endIdx)
-                   .trim();
+                .trim();
     }
 
     private List<String> parseTags(String tagsText) {
@@ -268,6 +273,17 @@ public class NewsAnalysisService {
                 .collect(Collectors.toList());
     }
 
+    private String normalizeImpact(String impact) {
+        if (impact == null || impact.isBlank()) {
+            return "";
+        }
+        String trimmed = impact.trim();
+        if (trimmed.equals("높은 영향") || trimmed.equals("중간 영향") || trimmed.equals("낮은 영향") ||
+                trimmed.equals("시장데이터")) {
+            return trimmed;                                                                                                                 }
+        return "시장데이터";
+    }
+
     /**
      * 유사한 과거 뉴스 찾기
      * 실제로는 벡터 DB나 키워드 매칭 등을 사용
@@ -275,17 +291,17 @@ public class NewsAnalysisService {
     private List<News> findSimilarNews(News currentNews) {
         // 간단한 예시: 최근 7일간의 뉴스 중 3개 반환
         LocalDateTime sevenDaysAgo = LocalDateTime.now()
-                                                  .minusDays(7);
+                .minusDays(7);
         List<News> recentNews = newsAiRepository.findByPublishedAtBetween(
-            sevenDaysAgo,
-            currentNews.getPublishedAt()
+                sevenDaysAgo,
+                currentNews.getPublishedAt()
         );
 
         return recentNews.stream()
-                         .filter(news -> !news.getId()
-                                              .equals(currentNews.getId()))
-                         .limit(3)
-                         .collect(Collectors.toList());
+                .filter(news -> !news.getId()
+                        .equals(currentNews.getId()))
+                .limit(3)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -295,8 +311,9 @@ public class NewsAnalysisService {
             String summary,
             String keyPoints,
             String similarCases,
+            String region,
+            String impact,
             List<String> tags
     ) {}
-
 
 }

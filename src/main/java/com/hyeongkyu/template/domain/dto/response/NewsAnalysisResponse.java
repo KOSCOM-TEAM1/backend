@@ -16,6 +16,8 @@ public record NewsAnalysisResponse(
         String newsTitle,
         String newsSummary,
         List<String> tags,
+        String region,
+        String impact,
         LocalDateTime newsPublishedAt,
         String summary,
         String impactAnalysis,
