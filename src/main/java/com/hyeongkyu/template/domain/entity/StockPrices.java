@@ -7,7 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.sql.Date;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,10 +47,10 @@ public class StockPrices {
 
     // 시장종류 (ex. 코스피, 코스닥, 나스닥)
     @Column(name = "close_price")
-    private Long price;
+    private Double price;
 
     // 거래 일시
     @Column(name = "date")
-    private Date date;
+    private LocalDateTime date;
 
 }

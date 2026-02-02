@@ -19,13 +19,13 @@ public class Constants {
     public static String USER_ROLE = "ROLE_USER";
 
     public static final List<String> NO_NEED_AUTH_URLS = List.of(
-            "/v3/api-docs.html/**",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/api/v1/auth/**",
-            "/api/v1/health/**",
-            "/api/news/**",
-            "/api/news-analysis/**"
+        "/v3/api-docs.html/**",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/api/v1/auth/**",
+        "/api/v1/health/**",
+        "/api/v1/**",
+        "/api/news-analysis/**"
     );
 
 }
