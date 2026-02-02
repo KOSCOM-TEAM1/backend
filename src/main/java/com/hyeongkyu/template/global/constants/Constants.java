@@ -23,6 +23,8 @@ public class Constants {
         "/v3/api-docs/**",
         "/swagger-ui/**",
         "/api/v1/auth/**",
+        "/",
+        "/health",
         "/api/v1/health/**",
         "/api/v1/**",
         "/api/news-analysis/**",
