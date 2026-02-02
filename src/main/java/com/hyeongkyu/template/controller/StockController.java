@@ -1,5 +1,6 @@
 package com.hyeongkyu.template.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hyeongkyu.template.global.common.ResponseDto;
 import com.hyeongkyu.template.global.constants.Constants;
 import com.hyeongkyu.template.service.StockService;
@@ -25,7 +26,8 @@ public class StockController {
 
     @Operation(summary = "기상 후 정보 조회", description = "기상 후 정보 조회")
     @GetMapping("/asset")
-    public ResponseDto<?> stockAsset(@RequestHeader(value = "id", defaultValue = "1") Long userId) {
+    public ResponseDto<?> stockAsset(@RequestHeader(value = "id", defaultValue = "1") Long userId)
+        throws JsonProcessingException {
         return ResponseDto.ok(stockService.selectReportDetail(userId, BASE_DATE));
     }
 
