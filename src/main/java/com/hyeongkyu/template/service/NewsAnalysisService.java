@@ -145,7 +145,7 @@ public class NewsAnalysisService {
                 .similarCases(parsedResult.similarCases)
                 .similarNewsIds(similarNewsIds)
                 .aiModel("gpt-4")
-                .confidenceScore(0.85)
+                .confidenceScore(parsedResult.confidenceScore)
                 .build();
 
         analysis = newsAnalysisResultRepository.save(analysis);
@@ -216,6 +216,9 @@ public class NewsAnalysisService {
         prompt.append("\n### 6. TAGS\n");
         prompt.append("[뉴스 관련 키워드 2개를 쉼표로 구분하여 작성]\n");
 
+        prompt.append("\n### 7. CONFIDENCE_SCORE\n");
+        prompt.append("[현재 뉴스와 유사 과거 사례의 유사도를 0~100 숫자로만 작성]\n");
+
         return prompt.toString();
     }
 
@@ -229,7 +232,8 @@ public class NewsAnalysisService {
         String similarCases = extractSection(aiResponse, "3. 유사 과거 사례", "### 4. REGION");
         String region = extractSection(aiResponse, "### 4. REGION", "### 5. IMPACT");
         String impact = extractSection(aiResponse, "### 5. IMPACT", "### 6. TAGS");
-        String tagsText = extractSection(aiResponse, "### 6. TAGS", "###END###");
+        String tagsText = extractSection(aiResponse, "### 6. TAGS", "### 7. CONFIDENCE_SCORE");
+        String confidenceScoreText = extractSection(aiResponse, "### 7. CONFIDENCE_SCORE", "###END###");
 
         return new AnalysisResult(
                 summary.trim(),
@@ -237,7 +241,8 @@ public class NewsAnalysisService {
                 similarCases.trim(),
                 region.trim(),
                 normalizeImpact(impact.trim()),
-                parseTags(tagsText)
+                parseTags(tagsText),
+                parseConfidenceScore(confidenceScoreText)
         );
     }
 
@@ -272,6 +277,28 @@ public class NewsAnalysisService {
                 .distinct()
                 .limit(2)
                 .collect(Collectors.toList());
+    }
+
+    private Double parseConfidenceScore(String scoreText) {
+        if (scoreText == null || scoreText.isBlank()) {
+            return 0.0;
+        }
+        String cleaned = scoreText.replaceAll("[^0-9.]", "");
+        if (cleaned.isBlank()) {
+            return 0.0;
+        }
+        try {
+            double value = Double.parseDouble(cleaned);
+            if (value < 0.0) {
+                return 0.0;
+            }
+            if (value > 100.0) {
+                return 100.0;
+            }
+            return value;
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
     }
 
     private String normalizeImpact(String impact) {
@@ -314,7 +341,8 @@ public class NewsAnalysisService {
             String similarCases,
             String region,
             String impact,
-            List<String> tags
+            List<String> tags,
+            Double confidenceScore
     ) {}
 
 }
