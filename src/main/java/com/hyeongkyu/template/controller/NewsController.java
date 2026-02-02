@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/news")
 @RequiredArgsConstructor
-@Tag(name = "뉴스 관리", description = "뉴스 CRUD API (테스트용)")
+@Tag(name = "뉴스 관리", description = "뉴스 CRUD API")
 public class NewsController {
 
     private final NewsAiRepository newsAiRepository;
