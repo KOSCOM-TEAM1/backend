@@ -16,3 +16,8 @@ jwt:
 
 openai:
   api-key: ${OPENAI_API_KEY}
+
+naver:
+  clova-client:
+    id: ${NAVER_CLOVA_CLIENT_ID}
+    secret: ${NAVER_CLOVA_CLIENT_SECRET}
