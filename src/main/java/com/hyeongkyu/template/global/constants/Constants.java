@@ -25,7 +25,8 @@ public class Constants {
         "/api/v1/auth/**",
         "/api/v1/health/**",
         "/api/v1/**",
-        "/api/news-analysis/**"
+        "/api/news-analysis/**",
+        "/api/tts/**"
     );
 
 }

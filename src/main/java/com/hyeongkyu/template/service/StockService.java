@@ -1,5 +1,8 @@
 package com.hyeongkyu.template.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyeongkyu.template.domain.dto.response.StockDto;
 import com.hyeongkyu.template.domain.entity.Reports;
 import com.hyeongkyu.template.repository.StocksRepository;
@@ -16,13 +19,17 @@ public class StockService {
 
     private final StocksRepository stocksRepository;
     private final UserService userService;
+    private final ObjectMapper objectMapper; // Spring이 알아서 주입해줍니다.
 
-    public String selectReportDetail(Long id, LocalDateTime baseTime) {
+    public JsonNode selectReportDetail(Long id, LocalDateTime baseTime)
+        throws JsonProcessingException {
+
         Reports reports = stocksRepository.findByUserIdAndCreatedAt(id, baseTime)
                                           .orElse(null);
-        return reports == null ? "" : reports.getDetails();
+
+        return reports == null ? null : objectMapper.readTree(reports.getDetails());
     }
-    
+
     public List<StockDto> selectStockList(Long id, LocalDateTime baseTime)
         throws NotFoundException {
 
