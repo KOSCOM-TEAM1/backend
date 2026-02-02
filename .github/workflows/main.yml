@@ -69,6 +69,8 @@ jobs:
               -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              -e NAVER_CLOVA_CLIENT_ID="${{ secrets.NAVER_CLOVA_CLIENT_ID }}" \
+              -e NAVER_CLOVA_CLIENT_SECRET="${{ secrets.NAVER_CLOVA_CLIENT_SECRET }}" \
               -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
               -v /home/ubuntu/logs:/logs \
               --restart always \
