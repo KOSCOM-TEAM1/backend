@@ -14,4 +14,5 @@ jwt:
   access-token-expire-period: 3600
   refresh-token-expire-period: 604800
 
-OPENAI_API_KEY: ${OPENAI_API_KEY}
+openai:
+  api-key: ${OPENAI_API_KEY}
