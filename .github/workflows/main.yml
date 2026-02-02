@@ -66,6 +66,7 @@ jobs:
               --network host \
               -e SPRING_PROFILES_ACTIVE=prod \
               -e DB_URL="${{ secrets.DB_URL }}" \
+              -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
               -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \

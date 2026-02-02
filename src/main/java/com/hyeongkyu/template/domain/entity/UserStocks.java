@@ -39,25 +39,21 @@ public class UserStocks {
     @Column(name = "id")
     private Long id;
 
-    // 주식번호
-    @Column(name = "stock_id", nullable = false)
-    private Long stockId;
+    // 식별코드
+    @Column(name = "user_id")
+    private Long userId;
+
+    // 식별코드
+    @Column(name = "code")
+    private String code;
 
     // 주식 보유량
-    @Column(name = "holdings", nullable = false)
-    private String holdings;
+    @Column(name = "holdings")
+    private Long holdings;
 
     // 계좌 번호
-    @Column(name = "account_id", nullable = false)
+    @Column(name = "account_number")
     private String accountNumber;
-
-    // 제공자명 (ex. 신한은행, 신한투자증권)
-    @Column(name = "broker")
-    private String broker;
-
-    // 자산 종류 (ex. 주식, 은행, 기타)
-    @Column(name = "type")
-    private String type;
 
     @LastModifiedDate
     @Column(name = "updated_at")
