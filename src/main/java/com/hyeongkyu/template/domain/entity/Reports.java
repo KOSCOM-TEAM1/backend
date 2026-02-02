@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,13 +15,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * packageName   : com.hyeongkyu.template.domain.entity
  * Author        : yu-mi
- * Data          : 2026. 2. 1.
- * Description   : 해외주식을 위한 환율 정보
+ * Data          : 2026. 2. 2.
+ * Description   : 주식 계좌 정보
  */
 
 @Entity
@@ -28,26 +30,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "exchange_rates")
+@Table(name = "reports")
 @Builder
 @AllArgsConstructor
-public class ExchangeRates {
+public class Reports {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    // 통화 코드 (ex. USD, KRW)
-    @Column(name = "currency_code")
-    private String code;
+    // 고객
+    @Column(name = "user_id")
+    private Long userId;
 
-    // 환율 값
-    @Column(name = "rate")
-    private double rate;
+    // 생성일시
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
-    // 기준 일시
-    @Column(name = "date")
-    private LocalDateTime date;
+    // 자산정보
+    @Size(max = 3000)
+    private String details;
+
+    // 요약 내용
+    @Size(max = 1000)
+    private String summary;
 
 }
