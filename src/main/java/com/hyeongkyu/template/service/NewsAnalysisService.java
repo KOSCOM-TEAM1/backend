@@ -173,6 +173,7 @@ public class NewsAnalysisService {
     /**
      * AI 분석용 프롬프트 생성 (심플 버전)
      */
+
     private String buildAnalysisPrompt(News news) {
         StringBuilder prompt = new StringBuilder();
         prompt.append("다음 증권 뉴스를 분석해주세요:\n\n");
