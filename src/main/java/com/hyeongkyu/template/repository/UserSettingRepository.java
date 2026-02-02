@@ -1,6 +1,6 @@
 package com.hyeongkyu.template.repository;
 
-import com.hyeongkyu.template.domain.entity.User;
+import com.hyeongkyu.template.domain.entity.UserSetting;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
  * Description   : 회원정보 검색
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserSettingRepository extends JpaRepository<UserSetting, Long> {
 
-    Optional<User> findById(Long id);
+    Optional<UserSetting> findById(Long id);
 
 }
