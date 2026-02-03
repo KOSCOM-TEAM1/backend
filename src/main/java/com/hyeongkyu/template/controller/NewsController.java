@@ -166,6 +166,57 @@ public class NewsController {
                 .isAnalyzed(false)
                 .build());
 
+        // 7. NVIDIA - Hopper(H100) 아키텍처 공개 (2023년 유사 사례)
+        newsList.add(News.builder()
+                .title("엔비디아, 차세대 Hopper H100 GPU 공개...AI 학습 성능 9배 향상")
+                .content("엔비디아(NVIDIA)는 2023년 3월 GTC(GPU Technology Conference)에서 Hopper 아키텍처 기반의 H100 GPU를 공식 출시하며 AI 컴퓨팅 시장에 새로운 표준을 제시했다. " +
+                        "H100은 이전 세대 A100 대비 AI 학습 속도가 최대 9배, 추론 성능은 최대 30배 향상된 것으로 나타났다. 특히 Transformer 엔진을 탑재해 대규모 언어 모델(LLM) 학습에 최적화된 성능을 제공한다. " +
+                        "시장 분석가들은 H100 출시 이후 엔비디아의 데이터센터 사업 매출이 급증할 것으로 전망했다. 실제로 2023년 2분기부터 클라우드 서비스 업체들의 H100 주문이 폭증하면서 공급 부족 현상이 발생했으며, " +
+                        "이는 엔비디아 주가를 연초 대비 240% 상승시키는 핵심 동력으로 작용했다. " +
+                        "엔비디아 CEO 젠슨 황은 'AI의 아이폰 순간'이라고 표현하며 생성형 AI 시대의 본격적인 개막을 선언했다. " +
+                        "업계 전문가들은 H100의 성공이 '성능 도약 + 생태계 독점' 패턴의 시작점이 됐으며, 이후 AI 인프라의 사실상 표준으로 자리잡게 됐다고 평가했다.")
+                .source("AI Times")
+                .url("https://www.aitimes.com/news/articleView.html?idxno=150234")
+                .publishedAt(lastWeek.minusMonths(24))  // 약 2년 전
+                .relatedStockIds("nvidia")
+                .isAnalyzed(false)
+                .build());
+
+        // 8. NVIDIA - Blackwell 아키텍처 공개 (2024년 유사 사례)
+        newsList.add(News.builder()
+                .title("엔비디아 Blackwell GPU 공개, AI 추론 비용 '1/25'로 혁신...빅테크 CAPEX 확대 예고")
+                .content("엔비디아는 2024년 3월 GTC 2024에서 차세대 Blackwell 아키텍처를 공개하며 AI 추론 시장의 게임체인저로 등장했다. " +
+                        "Blackwell B100/B200 GPU는 2,080억 개의 트랜지스터를 탑재하고, Hopper 대비 AI 추론 성능이 최대 25배 향상되면서도 비용과 전력 소비는 크게 절감된 것으로 나타났다. " +
+                        "특히 GPT-4 수준의 대규모 언어 모델 추론 비용을 기존 대비 1/25 수준으로 낮출 수 있다는 점이 주목받았다. " +
+                        "이번 발표는 AI 산업의 패러다임 전환을 시사한다. 그동안 AI 시장은 '학습(Training)' 중심이었으나, Blackwell의 등장으로 '추론(Inference)' 중심으로 빠르게 전환될 것으로 예상된다. " +
+                        "실제로 발표 직후 마이크로소프트, 구글, 아마zon, 메타 등 빅테크 기업들이 Blackwell 기반 데이터센터 투자 계획을 잇따라 발표했다. " +
+                        "모건스탠리는 '2025년 클라우드 업체들의 AI 인프라 투자(CAPEX)가 전년 대비 40% 이상 증가할 것'이라고 전망하며, 그 중심에 Blackwell이 있다고 분석했다. " +
+                        "시장은 이를 엔비디아의 지속적인 성장 동력으로 해석하며 주가는 발표 후 한 달간 35% 상승했다.")
+                .source("TechCrunch Korea")
+                .url("https://techcrunch.com/nvidia-blackwell-gpu-launch-2024")
+                .publishedAt(lastWeek.minusMonths(10))  // 약 10개월 전
+                .relatedStockIds("nvidia")
+                .isAnalyzed(false)
+                .build());
+
+        // 9. NVIDIA - CUDA 생태계 확장 및 개발자 락인 전략 (반복 패턴)
+        newsList.add(News.builder()
+                .title("엔비디아 CUDA 생태계 확대...TensorRT·NeMo 오픈소스 공개로 개발자 락인 강화")
+                .content("엔비디아가 AI 소프트웨어 생태계를 지속적으로 확장하며 '칩 + 소프트웨어 + 표준' 삼위일체 전략을 강화하고 있다. " +
+                        "최근 엔비디아는 AI 추론 최적화 엔진 TensorRT-LLM, 대규모 언어 모델 개발 프레임워크 NeMo, 멀티모달 AI 툴킷 등을 오픈소스로 공개하며 개발자 커뮤니티를 적극 확대하고 있다. " +
+                        "이는 2006년 출시된 CUDA(Compute Unified Device Architecture) 플랫폼의 연장선상에 있다. CUDA는 지난 18년간 전 세계 400만 명 이상의 개발자가 사용하며 GPU 컴퓨팅의 사실상 표준으로 자리잡았다. " +
+                        "업계 전문가들은 엔비디아의 전략을 '기술적 해자(moat) 구축'이라고 평가한다. 하드웨어 성능만으로는 경쟁사가 따라잡을 수 있지만, " +
+                        "수십만 줄의 CUDA 코드와 최적화된 라이브러리로 구성된 소프트웨어 생태계는 쉽게 대체할 수 없기 때문이다. " +
+                        "실제로 AMD, 인텔 등 경쟁사들이 하드웨어 성능에서는 근접했음에도 불구하고 시장 점유율에서 엔비디아를 따라잡지 못하는 주요 이유로 CUDA 생태계가 꼽힌다. " +
+                        "시티그룹 애널리스트는 '엔비디아의 진짜 경쟁력은 GPU가 아니라 CUDA'라며 '이는 장기적으로 80% 이상의 시장 점유율을 유지할 수 있는 핵심 요인'이라고 분석했다. " +
+                        "최근에는 생성형 AI 붐과 함께 CUDA 기반 툴 수요가 폭발적으로 증가하면서 개발자 락인(lock-in) 효과가 더욱 강화되고 있다.")
+                .source("ZDNet Korea")
+                .url("https://zdnet.co.kr/view/?no=20240215093045")
+                .publishedAt(lastWeek.minusMonths(6))  // 약 6개월 전
+                .relatedStockIds("nvidia")
+                .isAnalyzed(false)
+                .build());
+
         List<News> savedNews = newsAiRepository.saveAll(newsList);
         log.info("샘플 뉴스 {}개 생성됨", savedNews.size());
         return ResponseEntity.ok((ResponseDto<List<News>>) ResponseDto.ok(savedNews));

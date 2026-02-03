@@ -27,7 +27,7 @@ public class NewsToSpeechService {
      * 뉴스 분석 결과를 음성으로 변환
      * 
      * @param analysisId 분석 결과 ID
-     * @param speaker 화자 (기본값: jinho - 뉴스 앵커)
+     * @param speaker 화자 (기본값: jinho - 아나운서/뉴스 앵커)
      * @return MP3 파일명
      */
     public String convertAnalysisToSpeech(Long analysisId, String speaker) throws IOException {
@@ -49,10 +49,10 @@ public class NewsToSpeechService {
     }
 
     /**
-     * 기본 화자(jinho - 뉴스 앵커)로 변환
+     * 기본 화자(jinho - 아나운서/뉴스 앵커)로 변환
      */
     public String convertAnalysisToSpeech(Long analysisId) throws IOException {
-        return convertAnalysisToSpeech(analysisId, "jinho");
+        return convertAnalysisToSpeech(analysisId, "jinho");  // 아나운서 음성
     }
 
     /**
