@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * CORS(Cross-Origin Resource Sharing) 설정
- * 프론트엔드( track24.vercel.app )에서 백엔드 API 호출 허용
+ * 프론트엔드( track24.vercel.app, localhost:5173, localhost:5174 )에서 백엔드 API 호출 허용
  */
 @Configuration
 public class CorsConfig {
@@ -26,7 +26,8 @@ public class CorsConfig {
         config.setAllowedOrigins(List.of(
                 FRONTEND_ORIGIN,
                 "http://localhost:3000",   // 로컬 개발용
-                "http://localhost:5173"     // Vite 등 로컬 개발용
+                "http://localhost:5173",   // Vite 기본 포트
+                "http://localhost:5174"    // Vite 개발 서버 (5174)
         ));
 
         // 허용할 HTTP 메서드
