@@ -81,12 +81,16 @@ public class ClovaVoiceTtsController {
     public ResponseEntity<ResponseDto<TtsResponse>> convertCustomTextToSpeech(
             @RequestBody CustomTtsRequest request) {
         
-        log.info("커스텀 텍스트 음성 변환 요청 - 텍스트 길이: {}, 화자: {}", 
-                request.text().length(), request.speaker());
+        String rawSpeaker = request.speaker();
+        log.info("커스텀 텍스트 음성 변환 요청 - 텍스트 길이: {}, 화자(원본): [{}]", 
+                request.text() != null ? request.text().length() : 0, rawSpeaker);
+        if (rawSpeaker != null && ("string".equalsIgnoreCase(rawSpeaker.trim()) || rawSpeaker.isBlank())) {
+            log.warn("TTS 화자 값이 비어있거나 잘못됨: [{}] -> 기본값 nara 사용", rawSpeaker);
+        }
 
         try {
-            // 기본값: jinho (아나운서). 미지원 시 서비스에서 nara로 폴백
-            String speaker = request.speaker() != null ? request.speaker() : ANNOUNCER_SPEAKER;
+            // 기본값: nara. 미지원/잘못된 값은 ClovaVoiceService에서 nara로 폴백
+            String speaker = rawSpeaker != null && !rawSpeaker.isBlank() ? rawSpeaker.trim() : ANNOUNCER_SPEAKER;
             int speed = request.speed() != null ? request.speed() : 0;
             int pitch = request.pitch() != null ? request.pitch() : 0;
             int volume = request.volume() != null ? request.volume() : 0;
