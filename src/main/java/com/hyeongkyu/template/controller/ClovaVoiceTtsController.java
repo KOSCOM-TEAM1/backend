@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @Tag(name = "CLOVA Voice TTS", description = "네이버 클라우드 CLOVA Voice를 이용한 음성 합성 API")
 public class ClovaVoiceTtsController {
 
-    /** 뉴스 읽어주기 기본 음성: 아나운서(뉴스 앵커) 스타일 */
+    /** 뉴스 읽어주기 기본 음성: jinho (아나운서/뉴스 앵커). 오류 시 ClovaVoiceService에서 nara로 폴백 */
     private static final String ANNOUNCER_SPEAKER = "jinho";
 
     private final NewsToSpeechService newsToSpeechService;
@@ -43,11 +43,11 @@ public class ClovaVoiceTtsController {
 
     /**
      * 뉴스 분석 결과를 음성으로 변환
-     * 기본 음성: jinho (아나운서/뉴스 앵커)
+     * 기본 음성: jinho (아나운서/뉴스 앵커). 미지원 화자 요청 시 서비스에서 nara로 폴백
      */
     @PostMapping("/news-analysis/{analysisId}")
     @Operation(summary = "뉴스 분석 음성 변환", 
-               description = "AI 분석 결과를 CLOVA Voice로 음성(MP3)으로 변환합니다. 기본 음성: jinho (아나운서/뉴스 앵커)")
+               description = "AI 분석 결과를 CLOVA Voice로 음성(MP3)으로 변환합니다. 기본 음성: jinho (아나운서). 오류/미지원 화자 시 nara로 폴백")
     public ResponseEntity<ResponseDto<TtsResponse>> convertNewsAnalysisToSpeech(
             @PathVariable Long analysisId,
             @RequestParam(required = false, defaultValue = "jinho") String speaker) {
@@ -85,7 +85,7 @@ public class ClovaVoiceTtsController {
                 request.text().length(), request.speaker());
 
         try {
-            // 기본값: 아나운서(뉴스 앵커) 음성
+            // 기본값: jinho (아나운서). 미지원 시 서비스에서 nara로 폴백
             String speaker = request.speaker() != null ? request.speaker() : ANNOUNCER_SPEAKER;
             int speed = request.speed() != null ? request.speed() : 0;
             int pitch = request.pitch() != null ? request.pitch() : 0;

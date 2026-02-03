@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -50,8 +51,21 @@ public class ClovaVoiceService {
      * @param volume 음량 -5~5 (기본값: 0)
      * @return 생성된 MP3 파일명
      */
+    /** Naver TTS Premium 지원 화자 (fin-ntruss 등 일부 엔드포인트는 제한적일 수 있음) */
+    private static final Set<String> ALLOWED_SPEAKERS = Set.of(
+            "nara", "jinho", "njinho", "mijin", "nbora", "ndaeseong", "ndonghyun", "clara", "matt",
+            "neunseo", "neunyoung", "ngoeun", "nheera", "nihyun", "njiwon", "njiyun", "nminjeong", "nminseo",
+            "nes_c_hyeri", "nes_c_sohyun", "nes_c_mikyung", "nes_c_kihyo", "meimei", "liangliang",
+            "carmen", "jose", "shinji"
+    );
+
+    /** 오류/미지원 화자 요청 시 폴백 화자 (nara: 여성 차분한 목소리, Premium 공통 지원) */
+    private static final String DEFAULT_SPEAKER = "nara";
+
     public String textToSpeech(String text, String speaker, int speed, int pitch, int volume) throws IOException {
-        log.info("CLOVA Voice TTS 요청 - 텍스트 길이: {}, 화자: {}", text.length(), speaker);
+        // 화자 검증: null, 빈값, "string" 리터럴, 미지원 화자는 기본값 사용
+        String resolvedSpeaker = resolveSpeaker(speaker);
+        log.info("CLOVA Voice TTS 요청 - 텍스트 길이: {}, 화자: {} (요청: {})", text.length(), resolvedSpeaker, speaker);
 
         // 1. 요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();
@@ -61,7 +75,7 @@ public class ClovaVoiceService {
 
         // 2. 요청 파라미터 설정
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("speaker", speaker);
+        params.add("speaker", resolvedSpeaker);
         params.add("text", text);
         params.add("speed", String.valueOf(speed));
         params.add("pitch", String.valueOf(pitch));
@@ -102,12 +116,28 @@ public class ClovaVoiceService {
     }
 
     /**
+     * 요청된 화자 값을 검증하고, 미지원/오류 시 폴백 화자(nara) 반환
+     */
+    private String resolveSpeaker(String speaker) {
+        if (speaker == null || speaker.isBlank()) {
+            return DEFAULT_SPEAKER;
+        }
+        String trimmed = speaker.trim();
+        // "string" 리터럴 등 잘못된 값 방지
+        if ("string".equalsIgnoreCase(trimmed) || !ALLOWED_SPEAKERS.contains(trimmed)) {
+            log.warn("미지원 또는 잘못된 화자 값 사용됨: '{}' -> 기본값 '{}' 사용", speaker, DEFAULT_SPEAKER);
+            return DEFAULT_SPEAKER;
+        }
+        return trimmed;
+    }
+
+    /**
      * 기본 설정으로 TTS 생성
      * 화자: nara (여성 차분한 목소리)
      * 속도, 높낮이, 음량: 0 (기본값)
      */
     public String textToSpeech(String text) throws IOException {
-        return textToSpeech(text, "nara", 0, 0, 0);
+        return textToSpeech(text, DEFAULT_SPEAKER, 0, 0, 0);
     }
 
     /**
